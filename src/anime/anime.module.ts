@@ -10,5 +10,6 @@ import { AnimeSchema, Anime } from './anime.schema';
   ],
   controllers: [AnimeController],
   providers: [AnimeService],
+  exports: [AnimeService, MongooseModule],
 })
 export class AnimeModule {}

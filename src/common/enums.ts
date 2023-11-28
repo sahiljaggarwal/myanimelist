@@ -80,3 +80,9 @@ export enum Season {
 export enum common {
   NotAvailable = 'Not Available',
 }
+
+export enum Gender {
+  Male = 'male',
+  Female = 'female',
+  NotAvailable = 'Not Available',
+}

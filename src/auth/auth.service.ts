@@ -29,7 +29,12 @@ export class AuthService {
   }
 
   async generateJwtToken(user: User): Promise<string> {
-    const payload = { sub: user.id, email: user.email };
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      _id: user._id,
+      role: user.role,
+    };
     return this.jwtService.sign(payload, {
       secret: this.configService.get<string>('secretKey'),
       expiresIn: '365d',
