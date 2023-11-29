@@ -3,21 +3,15 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Gender, common } from 'src/common/enums';
 
 @Schema({ timestamps: true })
-export class Character extends Document {
+export class Character {
   @Prop({ type: mongoose.Schema.Types.ObjectId })
   contentId: mongoose.Types.ObjectId;
 
-  @Prop()
+  @Prop({ required: true })
   name: string;
 
   @Prop({ enum: Gender, default: Gender.NotAvailable })
   gender: Gender;
-
-  @Prop()
-  age: string;
-
-  @Prop()
-  birthday: string;
 
   @Prop({ default: common.NotAvailable })
   bio: string;

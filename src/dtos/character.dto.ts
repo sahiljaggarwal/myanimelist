@@ -9,8 +9,5 @@ export class CreateCharacterDto {
   gender: Gender;
 
   @IsString()
-  age: string;
-
-  @IsString()
   bio: string;
 }

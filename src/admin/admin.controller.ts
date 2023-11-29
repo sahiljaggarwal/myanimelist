@@ -12,10 +12,15 @@ import { SuccessResponse } from 'src/common/SuccessResponse';
 import { AnimeDto } from '../dtos/anime.dto';
 import { AnimeService } from 'src/anime/anime.service';
 import { Anime } from 'src/anime/anime.schema';
+import { CharacterService } from 'src/character/character.service';
+import { CreateCharacterDto } from 'src/dtos/character.dto';
 
 @Controller('admin')
 export class AdminController {
-  constructor(private animeService: AnimeService) {}
+  constructor(
+    private animeService: AnimeService,
+    private characterService: CharacterService,
+  ) {}
 
   // Add Anime, Manga Controller
   @Post('add')
@@ -54,7 +59,7 @@ export class AdminController {
     }
   }
 
-  // Get Anime, Manga By Type Controller
+  // Get Anime By Type Controller
   @Get('content/type/anime')
   @HttpCode(200)
   async getContentByTypeAnime(): Promise<
@@ -69,7 +74,7 @@ export class AdminController {
     }
   }
 
-  // Get Anime, Manga By Type Controller
+  // Get Manga By Type Controller
   @Get('content/type/manga')
   @HttpCode(200)
   async getContentByTypeManga(): Promise<
@@ -78,6 +83,59 @@ export class AdminController {
     try {
       const result = await this.animeService.getContentByTypeManga();
       return new SuccessResponse({ message: 'content data', result }, true);
+    } catch (error) {
+      console.log(error);
+      return new ErrorResponse(error.message, 500, false);
+    }
+  }
+
+  // Add Content Character
+  @Post('content/character/:id')
+  @HttpCode(201)
+  async addContentCharacter(
+    @Param('id') id: string,
+    @Body() content: CreateCharacterDto,
+  ): Promise<SuccessResponse<any> | ErrorResponse> {
+    try {
+      console.log('id, ', id);
+      const result = await this.characterService.addContentCharacterForAdmin(
+        id,
+        content,
+      );
+      return new SuccessResponse(
+        { message: 'character added successfully' },
+        true,
+      );
+    } catch (error) {
+      console.log(error);
+      return new ErrorResponse(error.message, 500, false);
+    }
+  }
+
+  // Get Content All Characters By Id
+  @Get('content/characters/:id')
+  @HttpCode(200)
+  async getContentCharactersById(
+    @Param('id') id: string,
+  ): Promise<SuccessResponse<any> | ErrorResponse> {
+    try {
+      const result = await this.characterService.getContentCharactersById(id);
+      return new SuccessResponse({ message: 'characters data', result }, true);
+    } catch (error) {
+      console.log(error);
+      return new ErrorResponse(error.message, 500, false);
+    }
+  }
+
+  // Get Content Single Character By Id
+  @Get('content/character/:id')
+  @HttpCode(200)
+  async getContentCharacterById(
+    @Param('id') id: string,
+  ): Promise<SuccessResponse<any> | ErrorResponse> {
+    try {
+      const result = await this.characterService.getContentCharacterById(id);
+      return new SuccessResponse({ message: 'character data', result }, true);
     } catch (error) {
       console.log(error);
       return new ErrorResponse(error.message, 500, false);
