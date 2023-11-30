@@ -1,7 +1,9 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
+  forwardRef,
 } from '@nestjs/common';
 import { Character } from './character.schema';
 import { CreateCharacterDto } from '../dtos/character.dto';
@@ -13,6 +15,7 @@ import mongoose, { Model } from 'mongoose';
 export class CharacterService {
   constructor(
     @InjectModel(Character.name) private readonly character: Model<Character>,
+    @Inject(forwardRef(() => AnimeService))
     private animeService: AnimeService,
   ) {}
 
@@ -59,5 +62,18 @@ export class CharacterService {
       throw new NotFoundException('Character not found');
     }
     return character;
+  }
+
+  // Character Search
+  private prepareSearchQuery(title: string): { name: RegExp } {
+    const formattedTitle = new RegExp(title, 'i'); // 'i' for case-insensitive
+    return { name: formattedTitle };
+  }
+
+  async searchCharacter(title: string): Promise<any> {
+    const characterResult = await this.character
+      .find(this.prepareSearchQuery(title))
+      .exec();
+    return characterResult;
   }
 }

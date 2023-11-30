@@ -18,6 +18,7 @@ import { ALL } from 'dns';
 import { RoleCheckMiddleware } from './middlewares/role.middleware';
 import { JwtService } from '@nestjs/jwt';
 import { CharacterModule } from './character/character.module';
+import { FavoriteModule } from './favorite/favorite.module';
 dotenv.config();
 
 @Module({
@@ -30,6 +31,7 @@ dotenv.config();
     AnimeModule,
     AdminModule,
     CharacterModule,
+    FavoriteModule,
   ],
   controllers: [AppController],
   providers: [AppService, GoogleStrategy, ConfigService, JwtService],
@@ -48,10 +50,15 @@ export class AppModule implements NestModule {
 
     // admin middleware
     const adminMiddleware = new RoleCheckMiddleware('admin').createMiddleware();
+    const userMiddleware = new RoleCheckMiddleware('user').createMiddleware();
     consumer
       .apply(adminMiddleware)
       .exclude({ path: 'auth/**', method: RequestMethod.ALL })
       .forRoutes({ path: 'admin/**', method: RequestMethod.ALL });
+
+    consumer
+      .apply(userMiddleware)
+      .exclude({ path: 'auth/**', method: RequestMethod.ALL })
+      .forRoutes({ path: 'anime/**', method: RequestMethod.ALL });
   }
 }
-// export class AppModule {}

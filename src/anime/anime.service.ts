@@ -1,18 +1,24 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Anime } from './anime.schema';
 import mongoose, { Model } from 'mongoose';
 import { AnimeDto } from 'src/dtos/anime.dto';
-import { contentType } from 'src/common/enums';
+import { Genre, Season, Status, contentType } from 'src/common/enums';
+import { CharacterService } from 'src/character/character.service';
+import { Character } from 'src/character/character.schema';
 
 @Injectable()
 export class AnimeService {
   constructor(
     @InjectModel(Anime.name) private readonly contentModel: Model<Anime>,
+    @Inject(forwardRef(() => CharacterService))
+    private readonly characterService: CharacterService,
   ) {}
 
   // Add Animes By Admin
@@ -117,5 +123,70 @@ export class AnimeService {
       throw new NotFoundException('Manga not found');
     }
     return content;
+  }
+
+  // get content by genre and type
+  async getContentByGenreAndType(
+    genre: Genre,
+    type: contentType,
+  ): Promise<Anime[]> {
+    const content = await this.contentModel.find({ type: type, genres: genre });
+    if (!content) {
+      throw new NotFoundException('Content not found');
+    }
+    return content;
+  }
+
+  // get content by seasons and type
+  async getContentBySeasonsAndType(
+    season: Season,
+    contentType: contentType,
+  ): Promise<Anime[]> {
+    const content = await this.contentModel.find({
+      type: contentType,
+      premiered: season,
+    });
+    if (!content) {
+      throw new NotFoundException('Content not found');
+    }
+    return content;
+  }
+
+  // get content by status of anime
+  async getContentByStatusAndType(
+    status: Status,
+    contentType: contentType,
+  ): Promise<Anime[]> {
+    console.log(status);
+    console.log(contentType);
+    const content = await this.contentModel.find({
+      type: contentType,
+      status: status,
+    });
+    if (!content) {
+      throw new NotFoundException('Content not found');
+    }
+    return content;
+  }
+
+  // Search Anime, Manga, Character
+
+  private prepareSearchQuery(title: string): { title: RegExp } {
+    const formattedTitle = new RegExp(title, 'i'); // 'i' for case-insensitive
+    return { title: formattedTitle };
+  }
+
+  async search(
+    title: string,
+  ): Promise<{ anime: Anime[]; characters: Character[] }> {
+    console.log('title, ', title);
+    const animeResult = await this.contentModel
+      .find(this.prepareSearchQuery(title))
+      .exec();
+
+    const characterResult = await this.characterService.searchCharacter(title);
+    console.log('characters', characterResult);
+
+    return { anime: animeResult, characters: characterResult };
   }
 }

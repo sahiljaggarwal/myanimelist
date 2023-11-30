@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { CharacterController } from './character.controller';
 import { CharacterService } from './character.service';
 import { AnimeService } from 'src/anime/anime.service';
@@ -8,7 +8,7 @@ import { Character, CharacterSchema } from './character.schema';
 
 @Module({
   imports: [
-    AnimeModule,
+    forwardRef(() => AnimeModule),
     MongooseModule.forFeature([
       { name: Character.name, schema: CharacterSchema },
     ]),
