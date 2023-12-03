@@ -76,4 +76,11 @@ export class CharacterService {
       .exec();
     return characterResult;
   }
+
+  async getFavoriteCharacters(characterIds: any): Promise<any> {
+    const characters = await this.character.find({
+      _id: { $in: characterIds },
+    });
+    return characters;
+  }
 }

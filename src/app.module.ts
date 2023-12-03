@@ -59,6 +59,9 @@ export class AppModule implements NestModule {
     consumer
       .apply(userMiddleware)
       .exclude({ path: 'auth/**', method: RequestMethod.ALL })
-      .forRoutes({ path: 'anime/**', method: RequestMethod.ALL });
+      .forRoutes(
+        { path: 'anime/**', method: RequestMethod.ALL },
+        { path: 'favorite/**', method: RequestMethod.ALL },
+      );
   }
 }

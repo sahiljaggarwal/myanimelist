@@ -189,4 +189,16 @@ export class AnimeService {
 
     return { anime: animeResult, characters: characterResult };
   }
+
+  // get favorite manga from favorite ids
+  async getFavoriteFromFavoritesId(favoriteIds: any): Promise<any> {
+    const mangaData = await this.contentModel.find({
+      _id: { $in: favoriteIds },
+      type: contentType.Manga,
+    });
+    if (!mangaData) {
+      throw new NotFoundException('Favorite not found');
+    }
+    return mangaData;
+  }
 }
