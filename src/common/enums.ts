@@ -86,3 +86,21 @@ export enum Gender {
   Female = 'female',
   NotAvailable = 'Not Available',
 }
+
+export enum Options {
+  Yes = 'yes',
+  No = 'no',
+}
+
+export enum Rating {
+  OneStar = '1',
+  TwoStar = '2',
+  threeStar = '3',
+  FourStar = '4',
+  FiveStar = '5',
+  SixStar = '6',
+  SevenStar = '7',
+  EightStar = '8',
+  NineStar = '9',
+  TenStar = '10',
+}

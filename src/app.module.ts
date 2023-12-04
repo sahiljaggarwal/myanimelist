@@ -3,6 +3,7 @@ import {
   MiddlewareConsumer,
   NestModule,
   RequestMethod,
+  Req,
 } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -19,6 +20,8 @@ import { RoleCheckMiddleware } from './middlewares/role.middleware';
 import { JwtService } from '@nestjs/jwt';
 import { CharacterModule } from './character/character.module';
 import { FavoriteModule } from './favorite/favorite.module';
+import { WatchlistModule } from './watchlist/watchlist.module';
+import { ReviewModule } from './review/review.module';
 dotenv.config();
 
 @Module({
@@ -32,6 +35,8 @@ dotenv.config();
     AdminModule,
     CharacterModule,
     FavoriteModule,
+    WatchlistModule,
+    ReviewModule,
   ],
   controllers: [AppController],
   providers: [AppService, GoogleStrategy, ConfigService, JwtService],
@@ -62,6 +67,7 @@ export class AppModule implements NestModule {
       .forRoutes(
         { path: 'anime/**', method: RequestMethod.ALL },
         { path: 'favorite/**', method: RequestMethod.ALL },
+        { path: 'watchlist/**', method: RequestMethod.ALL },
       );
   }
 }
