@@ -197,4 +197,87 @@ export class FavoriteService {
     }
     return result;
   }
+
+  async getTopFavoriteCharacters1(): Promise<any[]> {
+    const favoritesCount = await this.favoriteModel.aggregate([
+      {
+        $group: {
+          _id: '$contentId',
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          count: -1,
+        },
+      },
+      {
+        $limit: 10, // Change this to the number of top characters you want
+      },
+    ]);
+
+    const topCharacterIds = favoritesCount.map((favorite) => favorite._id);
+
+    // const topCharacters = await this.characterModel.find({
+    //   _id: { $in: topCharacterIds },
+    // });
+    const topCharacters =
+      await this.characterService.topCharactersIds(topCharacterIds);
+
+    const result = topCharacters.map((character) => ({
+      characterName: character.name,
+      characterId: character._id,
+      count:
+        favoritesCount.find((favorite) => favorite._id.equals(character._id))
+          ?.count || 0,
+    }));
+
+    return result;
+  }
+
+  // Get Top 10 Characters
+  async getTopFavoriteCharacters(): Promise<any[]> {
+    const favoritesCount = await this.favoriteModel.aggregate([
+      {
+        $group: {
+          _id: '$contentId',
+          favCount: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          favCount: -1,
+        },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
+
+    const topCharacterIds = favoritesCount.map((favorite) => favorite._id);
+
+    const topCharacters =
+      await this.characterService.topCharactersIds(topCharacterIds);
+
+    // Sort topCharacters based on the count in descending order
+    topCharacters.sort((a, b) => {
+      const countA =
+        favoritesCount.find((favorite) => favorite._id.equals(a._id))
+          ?.favCount || 0;
+      const countB =
+        favoritesCount.find((favorite) => favorite._id.equals(b._id))
+          ?.favCount || 0;
+      return countB - countA;
+    });
+
+    const result = topCharacters.map((character) => ({
+      characterName: character.name,
+      characterId: character._id,
+      favCount:
+        favoritesCount.find((favorite) => favorite._id.equals(character._id))
+          ?.favCount || 0,
+    }));
+
+    return result;
+  }
 }

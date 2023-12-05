@@ -128,4 +128,17 @@ export class FavoriteController {
       return new ErrorResponse(error.message, 500, false);
     }
   }
+
+  // get Top Character
+  @Get('top/character')
+  @HttpCode(200)
+  async getTopCharacter(): Promise<SuccessResponse<any> | ErrorResponse> {
+    try {
+      const result = await this.favoriteService.getTopFavoriteCharacters();
+      return new SuccessResponse({ message: 'top character', result }, true);
+    } catch (error) {
+      console.log(error);
+      return new ErrorResponse(error.message, 500, false);
+    }
+  }
 }

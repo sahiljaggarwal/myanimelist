@@ -95,7 +95,7 @@ export enum Options {
 export enum Rating {
   OneStar = '1',
   TwoStar = '2',
-  threeStar = '3',
+  ThreeStar = '3',
   FourStar = '4',
   FiveStar = '5',
   SixStar = '6',

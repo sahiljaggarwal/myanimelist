@@ -68,6 +68,7 @@ export class AppModule implements NestModule {
         { path: 'anime/**', method: RequestMethod.ALL },
         { path: 'favorite/**', method: RequestMethod.ALL },
         { path: 'watchlist/**', method: RequestMethod.ALL },
+        { path: 'review/**', method: RequestMethod.ALL },
       );
   }
 }

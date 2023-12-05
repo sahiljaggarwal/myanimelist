@@ -201,4 +201,42 @@ export class AnimeService {
     }
     return mangaData;
   }
+
+  // get top 10 animes by ratings
+  async getTopRatedAnimes(): Promise<any[]> {
+    const result = await this.contentModel.aggregate([
+      {
+        $match: {
+          rating: { $in: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'] }, // Filter out invalid ratings
+        },
+      },
+      {
+        $group: {
+          _id: '$contentId', // Assuming contentId is the reference to anime
+          count: { $sum: 1 },
+          avgRating: { $avg: { $toDouble: '$rating' } }, // Convert rating to numeric for average
+        },
+      },
+      {
+        $lookup: {
+          from: 'animes', // Change this to the actual collection name for animes
+          localField: '_id',
+          foreignField: '_id',
+          as: 'animeData',
+        },
+      },
+      {
+        $unwind: '$animeData',
+      },
+      {
+        $project: {
+          animeTitle: '$animeData.title',
+          animeId: '$animeData._id',
+          count: 1,
+          avgRating: 1,
+        },
+      },
+    ]);
+    return result;
+  }
 }

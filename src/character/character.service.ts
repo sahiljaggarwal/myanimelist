@@ -83,4 +83,12 @@ export class CharacterService {
     });
     return characters;
   }
+
+  // top character finder
+  async topCharactersIds(topCharacterIds: any) {
+    const topCharacters = await this.character.find({
+      _id: { $in: topCharacterIds },
+    });
+    return topCharacters;
+  }
 }
