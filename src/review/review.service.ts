@@ -53,6 +53,68 @@ export class ReviewService {
     return reviews;
   }
 
+  async getContentWithAverageRating(contentId: string): Promise<any> {
+    const result = await this.reviewModel.aggregate([
+      {
+        $match: {
+          contentId: new mongoose.Types.ObjectId(contentId),
+          rating: { $in: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'] },
+        },
+      },
+      {
+        $group: {
+          _id: '$contentId',
+          count: { $sum: 1 },
+          totalRating: { $sum: { $toDouble: '$rating' } },
+        },
+      },
+      {
+        $lookup: {
+          from: 'animes',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'animeData',
+        },
+      },
+      {
+        $unwind: '$animeData',
+      },
+      {
+        $addFields: {
+          avgRating: { $divide: ['$totalRating', '$count'] },
+        },
+      },
+      {
+        $project: {
+          'animeData._id': 1,
+          'animeData.type': 1,
+          'animeData.title': 1,
+          'animeData.episodesOrChapters': 1,
+          'animeData.volumesOrSeasons': 1,
+          'animeData.status': 1,
+          'animeData.aired': 1,
+          'animeData.premiered': 1,
+          'animeData.genres': 1,
+          'animeData.broadcast': 1,
+          'animeData.source': 1,
+          'animeData.audience': 1,
+          'animeData.languages': 1,
+          'animeData.streaming': 1,
+          'animeData.studios': 1,
+          'animeData.author': 1,
+          'animeData.image': 1,
+          'animeData.duration': 1,
+          'animeData.synopsis': 1,
+          count: 1,
+          avgRating: 1,
+        },
+      },
+    ]);
+
+    // Return the first (and only) result, or null if not found
+    return result.length > 0 ? result[0] : null;
+  }
+
   // delete review by Id [Admin]
   async deleteReviewById(reviewId: string): Promise<any> {
     const reviewObjId = new mongoose.Types.ObjectId(reviewId);

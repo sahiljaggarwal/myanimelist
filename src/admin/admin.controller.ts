@@ -18,12 +18,14 @@ import { CreateCharacterDto } from 'src/dtos/character.dto';
 import { Genre, Season, Status, contentType } from 'src/common/enums';
 import { combineLatest } from 'rxjs';
 import { Character } from 'src/character/character.schema';
+import { ReviewService } from 'src/review/review.service';
 
 @Controller('admin')
 export class AdminController {
   constructor(
     private animeService: AnimeService,
     private characterService: CharacterService,
+    private reviewService: ReviewService,
   ) {}
 
   // Add Anime, Manga Controller
@@ -55,7 +57,8 @@ export class AdminController {
     SuccessResponse<{ message: string; result: Anime }> | ErrorResponse
   > {
     try {
-      const result = await this.animeService.getContentById(id);
+      // const result = await this.animeService.getContentById(id);
+      const result = await this.reviewService.getContentWithAverageRating(id);
       return new SuccessResponse({ message: 'content data', result }, true);
     } catch (error) {
       console.log(error);

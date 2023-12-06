@@ -1,8 +1,10 @@
 import {
   BadRequestException,
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Favorite } from './favorite.schema';
@@ -15,7 +17,10 @@ import { AnimeService } from 'src/anime/anime.service';
 export class FavoriteService {
   constructor(
     @InjectModel(Favorite.name) private readonly favoriteModel: Model<Favorite>,
+    @Inject(forwardRef(() => CharacterService))
     private characterService: CharacterService,
+
+    @Inject(forwardRef(() => AnimeService))
     private animeService: AnimeService,
   ) {}
 
@@ -218,9 +223,6 @@ export class FavoriteService {
 
     const topCharacterIds = favoritesCount.map((favorite) => favorite._id);
 
-    // const topCharacters = await this.characterModel.find({
-    //   _id: { $in: topCharacterIds },
-    // });
     const topCharacters =
       await this.characterService.topCharactersIds(topCharacterIds);
 
@@ -279,5 +281,34 @@ export class FavoriteService {
     }));
 
     return result;
+  }
+
+  async getFavoriteCountByContentId(contentId: any): Promise<number> {
+    const count = await this.favoriteModel.countDocuments({ contentId });
+    return count;
+  }
+
+  async getFavoriteCountsForCharacters(
+    characterIds: string[],
+  ): Promise<Map<string, number>> {
+    const favoriteCountsMap = new Map<string, number>();
+
+    // Use Promise.all to concurrently fetch favorite counts for each character
+    await Promise.all(
+      characterIds.map(async (characterId) => {
+        try {
+          const favoriteCount =
+            await this.getFavoriteCountByContentId(characterId);
+          favoriteCountsMap.set(characterId, favoriteCount);
+        } catch (error) {
+          // Handle errors, e.g., log them or handle them based on your requirements
+          console.error(
+            `Error fetching favorite count for character ${characterId}: ${error.message}`,
+          );
+        }
+      }),
+    );
+
+    return favoriteCountsMap;
   }
 }

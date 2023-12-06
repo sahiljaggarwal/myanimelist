@@ -10,6 +10,7 @@ import { CreateCharacterDto } from '../dtos/character.dto';
 import { AnimeService } from 'src/anime/anime.service';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
+import { FavoriteService } from 'src/favorite/favorite.service';
 
 @Injectable()
 export class CharacterService {
@@ -17,6 +18,9 @@ export class CharacterService {
     @InjectModel(Character.name) private readonly character: Model<Character>,
     @Inject(forwardRef(() => AnimeService))
     private animeService: AnimeService,
+
+    @Inject(forwardRef(() => FavoriteService))
+    private favoriteService: FavoriteService,
   ) {}
 
   // add content character
@@ -42,14 +46,14 @@ export class CharacterService {
   // get characters by content id
   async getContentCharactersById(id: string): Promise<any> {
     const isContentExist = await this.animeService.getContentById(id);
-    const character = await this.character.find({
+    const characters = await this.character.find({
       contentId: isContentExist._id,
     });
 
-    if (!character) {
+    if (!characters || characters.length === 0) {
       throw new NotFoundException('Characters not found');
     }
-    return character;
+    return characters;
   }
   // get character by content id
   async getContentCharacterById(id: string): Promise<any> {
@@ -61,7 +65,13 @@ export class CharacterService {
     if (!character) {
       throw new NotFoundException('Character not found');
     }
-    return character;
+    const favoriteCount =
+      await this.favoriteService.getFavoriteCountByContentId(id);
+    // return character;
+    return {
+      ...character.toObject(),
+      favoriteCount,
+    };
   }
 
   // Character Search

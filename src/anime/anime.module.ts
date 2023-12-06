@@ -7,15 +7,18 @@ import { CharacterModule } from 'src/character/character.module';
 import { CharacterService } from 'src/character/character.service';
 import { ReviewModule } from 'src/review/review.module';
 import { ReviewService } from 'src/review/review.service';
+import { FavoriteModule } from 'src/favorite/favorite.module';
+import { FavoriteService } from 'src/favorite/favorite.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Anime.name, schema: AnimeSchema }]),
     forwardRef(() => CharacterModule),
     ReviewModule,
+    forwardRef(() => FavoriteModule),
   ],
   controllers: [AnimeController],
-  providers: [AnimeService, CharacterService, ReviewService],
+  providers: [AnimeService, CharacterService, ReviewService, FavoriteService],
   exports: [AnimeService, MongooseModule],
 })
 export class AnimeModule {}
