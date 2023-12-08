@@ -7,6 +7,8 @@ import {
   Get,
   Param,
   Query,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { ErrorResponse } from 'src/common/ErrorResponse';
 import { SuccessResponse } from 'src/common/SuccessResponse';
@@ -19,6 +21,8 @@ import { Genre, Season, Status, contentType } from 'src/common/enums';
 import { combineLatest } from 'rxjs';
 import { Character } from 'src/character/character.schema';
 import { ReviewService } from 'src/review/review.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerConfig } from 'src/middlewares/multer.middleware';
 
 @Controller('admin')
 export class AdminController {
@@ -29,17 +33,18 @@ export class AdminController {
   ) {}
 
   // Add Anime, Manga Controller
+  @UseInterceptors(FileInterceptor('image', multerConfig))
   @Post('add')
   @HttpCode(201)
   async addContent(
     @Body() content: AnimeDto,
-  ): Promise<
-    SuccessResponse<{ message: string; result: Anime }> | ErrorResponse
-  > {
+    @UploadedFile() image: Express.Multer.File,
+  ): Promise<SuccessResponse<{ message: string }> | ErrorResponse> {
     try {
-      const result = await this.animeService.addContentByAdmin(content);
+      console.log('image', image);
+      const result = await this.animeService.addContentByAdmin(content, image);
       return new SuccessResponse(
-        { message: 'Content added successfully', result },
+        { message: 'Content added successfully' },
         true,
       );
     } catch (error) {

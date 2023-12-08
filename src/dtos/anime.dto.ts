@@ -33,18 +33,17 @@ export class AnimeDto {
   @IsNumber()
   volumesOrSeasons: number;
 
-  @IsEnum(Status)
-  status: Status;
+  @IsString()
+  status: String;
 
-  @Type(() => Date)
-  @ValidateNested()
-  aired: Date[];
+  @IsString()
+  aired: String[];
 
   @IsEnum(Season)
   premiered: Season;
 
-  @IsEnum(Genre, { each: true })
-  genres: Genre[];
+  @IsString()
+  genres: String[];
 
   @Type(() => Date)
   @ValidateNested()
@@ -57,11 +56,11 @@ export class AnimeDto {
   @IsEnum(Audience)
   audience: Audience;
 
-  @IsEnum(Language, { each: true })
-  languages: Language[];
+  @IsString()
+  languages: String[];
 
-  @IsEnum(StreamingSource, { each: true })
-  streaming: StreamingSource[];
+  @IsString()
+  streaming: String[];
 
   @IsString({})
   studios: string[];

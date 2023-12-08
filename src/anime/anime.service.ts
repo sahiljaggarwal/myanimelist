@@ -11,6 +11,10 @@ import mongoose, { Model } from 'mongoose';
 import { AnimeDto } from 'src/dtos/anime.dto';
 import { Genre, Season, Status, contentType } from 'src/common/enums';
 import { CharacterService } from 'src/character/character.service';
+import { ConfigService } from '@nestjs/config';
+import * as cloudinary from 'cloudinary';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 import { Character } from 'src/character/character.schema';
 
 @Injectable()
@@ -19,10 +23,18 @@ export class AnimeService {
     @InjectModel(Anime.name) private readonly contentModel: Model<Anime>,
     @Inject(forwardRef(() => CharacterService))
     private readonly characterService: CharacterService,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    // Configure Cloudinary
+    cloudinary.v2.config({
+      cloud_name: this.configService.get<string>('cloud_name'),
+      api_key: this.configService.get<string>('api_key'),
+      api_secret: this.configService.get<string>('api_secret'),
+    });
+  }
 
   // Add Animes By Admin
-  async addContentByAdmin(content: AnimeDto): Promise<any> {
+  async addContentByAdmin(content: AnimeDto, image): Promise<any> {
     const {
       type,
       title,
@@ -93,7 +105,36 @@ export class AnimeService {
       synopsis,
     });
 
+    const imagePath = image.path;
+    console.log('imagePath', imagePath);
+
+    if (image) {
+      try {
+        const imageResult = await cloudinary.v2.uploader.upload(image.path);
+        console.log('imageResult ', imageResult);
+        addContent.image = imageResult.secure_url;
+        console.log('addContent image', addContent.image);
+      } catch (error) {
+        console.log(error);
+        console.log('Company Image Uploading Error');
+      } finally {
+        const imagePath = image.path;
+        if (imagePath) {
+          // Delete the local image even if the Cloudinary upload fails
+          try {
+            await fs.unlink(imagePath);
+            console.log(
+              'Company Image Deleted Successfully From Local Storage (in finally)',
+            );
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      }
+    }
+
     await addContent.save();
+    console.log('addContent', addContent);
     return addContent;
   }
 
