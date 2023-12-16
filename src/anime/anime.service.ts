@@ -34,7 +34,10 @@ export class AnimeService {
   }
 
   // Add Animes By Admin
-  async addContentByAdmin(content: AnimeDto, image): Promise<any> {
+  async addContentByAdmin(
+    content: AnimeDto,
+    image: Express.Multer.File,
+  ): Promise<any> {
     const {
       type,
       title,
@@ -136,6 +139,56 @@ export class AnimeService {
     await addContent.save();
     console.log('addContent', addContent);
     return addContent;
+  }
+
+  // Update Animes By Admin
+  async updateContentByAdmin(
+    contentId: string,
+    content: AnimeDto,
+    image: Express.Multer.File,
+  ): Promise<any> {
+    const updateContent = await this.contentModel.findByIdAndUpdate(
+      contentId,
+      { ...content },
+      { new: true },
+    );
+    if (!updateContent) {
+      throw new NotFoundException('Content not found');
+    }
+
+    let oldContentImagePublicId: string;
+    if (updateContent.image) {
+      const parts = updateContent.image.split('/');
+      oldContentImagePublicId = parts[parts.length - 2];
+    }
+    if (image) {
+      try {
+        const contentImageResult = await cloudinary.v2.uploader.upload(
+          image.path,
+        );
+        updateContent.image = contentImageResult.secure_url;
+        if (oldContentImagePublicId) {
+          await cloudinary.v2.uploader.destroy(oldContentImagePublicId);
+        }
+      } catch (error) {
+        console.log('Image Updating Error', error);
+      } finally {
+        const contentImagePath = image.path;
+        if (contentImagePath) {
+          try {
+            await fs.unlink(contentImagePath);
+            console.log(
+              'Content Image Deleted Successfully From Local Storage',
+            );
+          } catch (error) {
+            console.log(error);
+            console.log('Company Image Deleted Error (Local Storage)');
+          }
+        }
+      }
+    }
+    await updateContent.save();
+    return updateContent;
   }
 
   // Get Content By Id For Both Admin And User

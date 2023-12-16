@@ -9,6 +9,7 @@ import {
   Query,
   UseInterceptors,
   UploadedFile,
+  Put,
 } from '@nestjs/common';
 import { ErrorResponse } from 'src/common/ErrorResponse';
 import { SuccessResponse } from 'src/common/SuccessResponse';
@@ -45,6 +46,32 @@ export class AdminController {
       const result = await this.animeService.addContentByAdmin(content, image);
       return new SuccessResponse(
         { message: 'Content added successfully' },
+        true,
+      );
+    } catch (error) {
+      console.log(error);
+      return new ErrorResponse(error.message, 500, false);
+    }
+  }
+
+  // Update Content(Anime, Manga)
+  @UseInterceptors(FileInterceptor('image', multerConfig))
+  @Put('update/:id')
+  @HttpCode(200)
+  async updateContent(
+    @Param('id') id: string,
+    @Body() content: AnimeDto,
+    @UploadedFile() image: Express.Multer.File,
+  ): Promise<SuccessResponse<any> | ErrorResponse> {
+    try {
+      const result = await this.animeService.updateContentByAdmin(
+        id,
+        content,
+        image,
+      );
+      console.log('result', result);
+      return new SuccessResponse(
+        { message: 'Content updated successfully' },
         true,
       );
     } catch (error) {
@@ -102,20 +129,49 @@ export class AdminController {
   }
 
   // Add Content Character
+  @UseInterceptors(FileInterceptor('character', multerConfig))
   @Post('content/character/:id')
   @HttpCode(201)
   async addContentCharacter(
     @Param('id') id: string,
     @Body() content: CreateCharacterDto,
+    @UploadedFile() character: Express.Multer.File,
   ): Promise<SuccessResponse<any> | ErrorResponse> {
     try {
       console.log('id, ', id);
       const result = await this.characterService.addContentCharacterForAdmin(
         id,
         content,
+        character,
       );
       return new SuccessResponse(
         { message: 'character added successfully' },
+        true,
+      );
+    } catch (error) {
+      console.log(error);
+      return new ErrorResponse(error.message, 500, false);
+    }
+  }
+
+  // Update Content Character
+  @UseInterceptors(FileInterceptor('character', multerConfig))
+  @Put('content/character/:id')
+  @HttpCode(200)
+  async updateContentCharacter(
+    @Param('id') id: string,
+    @Body() content: CreateCharacterDto,
+    @UploadedFile() character: Express.Multer.File,
+  ): Promise<SuccessResponse<any> | ErrorResponse> {
+    try {
+      const result = await this.characterService.updateContentCharacter(
+        id,
+        content,
+        character,
+      );
+      console.log(result);
+      return new SuccessResponse(
+        { message: 'character updated successfully' },
         true,
       );
     } catch (error) {
