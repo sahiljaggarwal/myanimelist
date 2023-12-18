@@ -251,8 +251,6 @@ export class AnimeService {
     status: Status,
     contentType: contentType,
   ): Promise<Anime[]> {
-    console.log(status);
-    console.log(contentType);
     const content = await this.contentModel.find({
       type: contentType,
       status: status,

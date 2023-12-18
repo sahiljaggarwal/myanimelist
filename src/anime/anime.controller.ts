@@ -164,7 +164,7 @@ export class AnimeController {
     }
   }
 
-  // Get Content By Season And Type
+  // Get Content By Status  And Type
   @Get('content/status/:status/:contentType')
   @HttpCode(200)
   async getContentByStatusAndType(

@@ -11,14 +11,24 @@ import {
 import { FavoriteService } from './favorite.service';
 import { SuccessResponse } from 'src/common/SuccessResponse';
 import { ErrorResponse } from 'src/common/ErrorResponse';
+import {
+  ApiResponse,
+  ApiOperation,
+  ApiTags,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import mongoose from 'mongoose';
 
+@ApiTags('Favorite')
+@ApiBearerAuth()
 @Controller('favorite')
 export class FavoriteController {
   constructor(private favoriteService: FavoriteService) {}
 
   // add favorite list for user
+
   @Post('add/:contentId/')
+  @ApiOperation({ summary: 'Add favorite list for user' })
   @HttpCode(200)
   async addFavoriteList(
     @Param('contentId') contentId: string,
@@ -46,6 +56,7 @@ export class FavoriteController {
 
   // get favorite list for user managa
   @Get('manga')
+  @ApiOperation({ summary: 'Get favorite list for manga' })
   @HttpCode(200)
   async getFavoriteManga(
     @Req() req: any,
@@ -66,6 +77,7 @@ export class FavoriteController {
 
   // get favorite list for user anime
   @Get('anime')
+  @ApiOperation({ summary: 'Get favorite list for anime' })
   @HttpCode(200)
   async getFavoriteAnime(
     @Req() req: any,
@@ -83,8 +95,9 @@ export class FavoriteController {
     }
   }
 
-  // get favorite list for user managa
+  // get favorite list for user character
   @Get('character')
+  @ApiOperation({ summary: 'Get favorite list for character' })
   @HttpCode(200)
   async getFavoriteCharacter(
     @Req() req: any,
@@ -105,6 +118,7 @@ export class FavoriteController {
 
   // Delete favorite list
   @Delete(':favoriteId')
+  @ApiOperation({ summary: 'delete favorite ' })
   @HttpCode(200)
   async deleteFavoriteList(
     @Param('favoriteId') favoriteId: string,
@@ -130,6 +144,7 @@ export class FavoriteController {
   }
 
   // get Top Character
+  @ApiOperation({ summary: 'Get Top Characters' })
   @Get('top/character')
   @HttpCode(200)
   async getTopCharacter(): Promise<SuccessResponse<any> | ErrorResponse> {

@@ -56,7 +56,7 @@ export class WatchlistService {
       },
       {
         $lookup: {
-          from: 'animes', // Assuming your anime collection is named 'animes'
+          from: 'animes',
           localField: 'contentId',
           foreignField: '_id',
           as: 'animeData',
@@ -72,7 +72,7 @@ export class WatchlistService {
       },
       {
         $project: {
-          watchListId: '$_id', // Include the watch list id in the result
+          watchListId: '$_id',
           animeData: 1,
         },
       },
@@ -109,7 +109,7 @@ export class WatchlistService {
       },
       {
         $lookup: {
-          from: 'animes', // Assuming your anime collection is named 'animes'
+          from: 'animes',
           localField: 'contentId',
           foreignField: '_id',
           as: 'animeData',
@@ -125,7 +125,7 @@ export class WatchlistService {
       },
       {
         $project: {
-          watchListId: '$_id', // Include the watch list id in the result
+          watchListId: '$_id',
           animeData: 1,
         },
       },
@@ -146,10 +146,6 @@ export class WatchlistService {
       _id: watchListObjId,
       userId: userId,
     });
-    // if (!(result.acknowledged === true && result.deletedCount === 1)) {
-    //   throw new NotFoundException('WatchList not found');
-    // }
-    console.log('result', result);
     return result;
   }
 
