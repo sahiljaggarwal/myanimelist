@@ -14,6 +14,10 @@ MyAnimeList (MAL) is a platform that allows users to track and discover anime an
 - **Google OAuth:** Used for user authentication.
 - **Cloudinary:** A cloud-based image and video management service used for handling media uploads and transformations.
 
+## Myanimelist Swagger Documentation
+```bash
+    http://localhost:4000/api
+```
 ## Roles
 
 The API supports two roles:
