@@ -8,8 +8,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('/api/v1');
   const config = new DocumentBuilder()
-    .setTitle('Auth')
-    .setDescription('The cats API description')
+    .setTitle('Myanimelist API')
+    .setDescription('The Myanimelist API description')
     .setVersion('1.0')
     .addBearerAuth(
       {

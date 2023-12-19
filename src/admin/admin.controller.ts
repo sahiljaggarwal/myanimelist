@@ -18,6 +18,16 @@ import { AnimeService } from 'src/anime/anime.service';
 import { Anime } from 'src/anime/anime.schema';
 import { CharacterService } from 'src/character/character.service';
 import { CreateCharacterDto } from 'src/dtos/character.dto';
+import {
+  ApiResponse,
+  ApiTags,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiBody,
+  ApiConsumes,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { Genre, Season, Status, contentType } from 'src/common/enums';
 import { combineLatest } from 'rxjs';
 import { Character } from 'src/character/character.schema';
@@ -25,6 +35,8 @@ import { ReviewService } from 'src/review/review.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerConfig } from 'src/middlewares/multer.middleware';
 
+@ApiTags('Admin')
+@ApiBearerAuth()
 @Controller('admin')
 export class AdminController {
   constructor(
@@ -35,7 +47,23 @@ export class AdminController {
 
   // Add Anime, Manga Controller
   @UseInterceptors(FileInterceptor('image', multerConfig))
-  @Post('add')
+  @Post('content/add')
+  @ApiOperation({ summary: 'Add Anime or Manga' })
+  @ApiResponse({
+    status: 201,
+    description: 'Content Added Successfully',
+    type: SuccessResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Anime or Manga details with image',
+    type: AnimeDto,
+  })
   @HttpCode(201)
   async addContent(
     @Body() content: AnimeDto,
@@ -56,7 +84,24 @@ export class AdminController {
 
   // Update Content(Anime, Manga)
   @UseInterceptors(FileInterceptor('image', multerConfig))
-  @Put('update/:id')
+  @ApiOperation({ summary: 'Update Anime or Manga' })
+  @ApiResponse({
+    status: 200,
+    description: 'Content Updated Successfully',
+    type: SuccessResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Anime or Manga details with image',
+    type: AnimeDto,
+  })
+  @ApiParam({ name: 'id', description: 'Content ID', type: 'string' })
+  @Put('content/update/:id')
   @HttpCode(200)
   async updateContent(
     @Param('id') id: string,
@@ -82,6 +127,18 @@ export class AdminController {
 
   // Get Anime, Manga By Id Controller
   @Get('content/:id')
+  @ApiOperation({ summary: 'Get Anime or Manga By Id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Content Data',
+    type: SuccessResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  })
+  @ApiParam({ name: 'id', description: 'Content ID', type: 'string' })
   @HttpCode(200)
   async getContentById(
     @Param() id: string,
@@ -100,6 +157,17 @@ export class AdminController {
 
   // Get Anime By Type Controller
   @Get('content/type/anime')
+  @ApiOperation({ summary: 'Get Anime By Type' })
+  @ApiResponse({
+    status: 200,
+    description: 'Content Data',
+    type: SuccessResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  })
   @HttpCode(200)
   async getContentByTypeAnime(): Promise<
     SuccessResponse<{ message: string; result: Anime[] }> | ErrorResponse
@@ -115,6 +183,17 @@ export class AdminController {
 
   // Get Manga By Type Controller
   @Get('content/type/manga')
+  @ApiOperation({ summary: 'Get Manga By Type' })
+  @ApiResponse({
+    status: 200,
+    description: 'Content Data',
+    type: SuccessResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  })
   @HttpCode(200)
   async getContentByTypeManga(): Promise<
     SuccessResponse<{ message: string; result: Anime[] }> | ErrorResponse
@@ -131,6 +210,23 @@ export class AdminController {
   // Add Content Character
   @UseInterceptors(FileInterceptor('character', multerConfig))
   @Post('content/character/:id')
+  @ApiOperation({ summary: 'Add Content Character' })
+  @ApiResponse({
+    status: 201,
+    description: 'Character Added Successfully',
+    type: SuccessResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Character details with image',
+    type: CreateCharacterDto,
+  })
+  @ApiParam({ name: 'id', description: 'Content ID', type: 'string' })
   @HttpCode(201)
   async addContentCharacter(
     @Param('id') id: string,
@@ -157,6 +253,23 @@ export class AdminController {
   // Update Content Character
   @UseInterceptors(FileInterceptor('character', multerConfig))
   @Put('content/character/:id')
+  @ApiOperation({ summary: 'Update Content Character' })
+  @ApiResponse({
+    status: 200,
+    description: 'Character Updated Successfully',
+    type: SuccessResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Character details with image',
+    type: CreateCharacterDto,
+  })
+  @ApiParam({ name: 'id', description: 'Content ID', type: 'string' })
   @HttpCode(200)
   async updateContentCharacter(
     @Param('id') id: string,
@@ -182,6 +295,18 @@ export class AdminController {
 
   // Get Content All Characters By Id
   @Get('content/characters/:id')
+  @ApiOperation({ summary: 'Get Content All Characters By Id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Characters Data',
+    type: SuccessResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  })
+  @ApiParam({ name: 'id', description: 'Content ID', type: 'string' })
   @HttpCode(200)
   async getContentCharactersById(
     @Param('id') id: string,
@@ -198,6 +323,19 @@ export class AdminController {
   // Get Content Single Character By Id
   @Get('content/character/:id')
   @HttpCode(200)
+  @ApiOperation({ summary: 'Get Content Single Character By Id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Character Data',
+    type: SuccessResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  })
+  @ApiParam({ name: 'id', description: 'Character ID', type: 'string' })
+  @HttpCode(200)
   async getContentCharacterById(
     @Param('id') id: string,
   ): Promise<SuccessResponse<any> | ErrorResponse> {
@@ -212,6 +350,29 @@ export class AdminController {
 
   // get content by genre and type
   @Get('content/genre/:genre/:contentType')
+  @ApiOperation({ summary: 'Get Content By Genre and Type' })
+  @ApiResponse({
+    status: 200,
+    description: 'Content Data',
+    type: SuccessResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  })
+  @ApiParam({
+    name: 'genre',
+    description: 'Genre',
+    enum: ['Action', 'Comedy', 'Drama'],
+    type: 'string',
+  })
+  @ApiParam({
+    name: 'contentType',
+    description: 'Content Type',
+    enum: ['anime', 'manga'],
+    type: 'string',
+  })
   @HttpCode(200)
   async getContentByGenreAndType(
     @Param('genre') genre: Genre,
@@ -234,6 +395,23 @@ export class AdminController {
 
   // Get Content By Season And Type
   @Get('content/season/:season/:contentType')
+  @ApiOperation({ summary: 'Get Content By Season And Type' })
+  @ApiResponse({
+    status: 200,
+    description: 'Season and Type Content Data',
+    type: SuccessResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  })
+  @ApiParam({ name: 'season', description: 'Season', enum: Season })
+  @ApiParam({
+    name: 'contentType',
+    description: 'Content Type',
+    enum: contentType,
+  })
   @HttpCode(200)
   async getContentBySeasonsAndType(
     @Param('season') season: Season,
@@ -259,6 +437,23 @@ export class AdminController {
 
   // Get Content By Status And Type
   @Get('content/status/:status/:contentType')
+  @ApiOperation({ summary: 'Get Content By Status And Type' })
+  @ApiResponse({
+    status: 200,
+    description: 'Status and Type Content Data',
+    type: SuccessResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  })
+  @ApiParam({ name: 'status', description: 'Status', enum: Status })
+  @ApiParam({
+    name: 'contentType',
+    description: 'Content Type',
+    enum: contentType,
+  })
   @HttpCode(200)
   async getContentByStatusAndType(
     @Param('status') status: Status,
@@ -284,6 +479,18 @@ export class AdminController {
 
   // Search Anime Manga And Chharacter
   @Get()
+  @ApiOperation({ summary: 'Search Anime Manga And Character' })
+  @ApiResponse({
+    status: 200,
+    description: 'Search Result',
+    type: SuccessResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  })
+  @ApiQuery({ name: 'title', description: 'Search Title' })
   @HttpCode(200)
   async searchContent(
     @Query('title') title: string,

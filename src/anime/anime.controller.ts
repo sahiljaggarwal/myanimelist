@@ -12,10 +12,21 @@ import { SuccessResponse } from 'src/common/SuccessResponse';
 import { AnimeDto } from '../dtos/anime.dto';
 import { AnimeService } from './anime.service';
 import { ReviewService } from 'src/review/review.service';
+import {
+  ApiResponse,
+  ApiTags,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { Genre, Season, Status, contentType } from 'src/common/enums';
 import { Anime } from './anime.schema';
 import { CharacterService } from 'src/character/character.service';
 
+@ApiTags('Anime')
+@ApiBearerAuth()
 @Controller('anime')
 export class AnimeController {
   constructor(
@@ -26,6 +37,22 @@ export class AnimeController {
 
   // get top animes by ratings
   @Get('top/:type')
+  @ApiOperation({ summary: 'Get Top Animes by Ratings' }) // Swagger annotation
+  @ApiResponse({
+    status: 200,
+    description: 'Top Animes',
+    type: SuccessResponse,
+  }) // Swagger annotation
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  }) // Swagger annotation
+  @ApiParam({
+    name: 'type',
+    description: 'Content Type',
+    enum: ['anime', 'manga'],
+  }) // Swagger annotation
   @HttpCode(200)
   async getTopAnimes(
     @Param('type') type: contentType,
@@ -41,6 +68,18 @@ export class AnimeController {
 
   // Get Anime, Manga By Id Controller
   @Get('content/:id')
+  @ApiOperation({ summary: 'Get Anime or Manga By Id' }) // Swagger annotation
+  @ApiResponse({
+    status: 200,
+    description: 'Content Data',
+    type: SuccessResponse,
+  }) // Swagger annotation
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  }) // Swagger annotation
+  @ApiParam({ name: 'id', description: 'Content ID', type: 'string' }) // Swagger annotation
   @HttpCode(200)
   async getContentById(
     @Param() id: string,
@@ -59,6 +98,17 @@ export class AnimeController {
 
   // Get Anime By Type Controller
   @Get('content/type/anime')
+  @ApiOperation({ summary: 'Get Anime By Type' }) // Swagger annotation
+  @ApiResponse({
+    status: 200,
+    description: 'Content Data',
+    type: SuccessResponse,
+  }) // Swagger annotation
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  }) // Swagger annotation
   @HttpCode(200)
   async getContentByTypeAnime(): Promise<
     SuccessResponse<{ message: string; result: Anime[] }> | ErrorResponse
@@ -74,6 +124,17 @@ export class AnimeController {
 
   // Get Manga By Type Controller
   @Get('content/type/manga')
+  @ApiOperation({ summary: 'Get Manga By Type' }) // Swagger annotation
+  @ApiResponse({
+    status: 200,
+    description: 'Content Data',
+    type: SuccessResponse,
+  }) // Swagger annotation
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  }) // Swagger annotation
   @HttpCode(200)
   async getContentByTypeManga(): Promise<
     SuccessResponse<{ message: string; result: Anime[] }> | ErrorResponse
@@ -89,6 +150,18 @@ export class AnimeController {
 
   // Get Content All Characters By Id
   @Get('content/characters/:id')
+  @ApiOperation({ summary: 'Get Content All Characters By Id' }) // Swagger annotation
+  @ApiResponse({
+    status: 200,
+    description: 'Characters Data',
+    type: SuccessResponse,
+  }) // Swagger annotation
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  }) // Swagger annotation
+  @ApiParam({ name: 'id', description: 'Content ID', type: 'string' }) // Swagger annotation
   @HttpCode(200)
   async getContentCharactersById(
     @Param('id') id: string,
@@ -104,6 +177,18 @@ export class AnimeController {
 
   // Get Content Single Character By Id
   @Get('content/character/:id')
+  @ApiOperation({ summary: 'Get Content Single Character By Id' }) // Swagger annotation
+  @ApiResponse({
+    status: 200,
+    description: 'Character Data',
+    type: SuccessResponse,
+  }) // Swagger annotation
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  }) // Swagger annotation
+  @ApiParam({ name: 'id', description: 'Character ID', type: 'string' }) // Swagger annotation
   @HttpCode(200)
   async getContentCharacterById(
     @Param('id') id: string,
@@ -119,6 +204,29 @@ export class AnimeController {
 
   // get content by genre and type
   @Get('content/genre/:genre/:contentType')
+  @ApiOperation({ summary: 'Get Content By Genre and Type' }) // Swagger annotation
+  @ApiResponse({
+    status: 200,
+    description: 'Content Data',
+    type: SuccessResponse,
+  }) // Swagger annotation
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  }) // Swagger annotation
+  @ApiParam({
+    name: 'genre',
+    description: 'Genre',
+    enum: ['Action', 'Comedy', 'Drama'],
+    type: 'string',
+  }) // Swagger annotation
+  @ApiParam({
+    name: 'contentType',
+    description: 'Content Type',
+    enum: ['anime', 'manga'],
+    type: 'string',
+  }) // Swagger annotation
   @HttpCode(200)
   async getContentByGenreAndType(
     @Param('genre') genre: Genre,
@@ -141,6 +249,29 @@ export class AnimeController {
 
   // Get Content By Season And Type
   @Get('content/season/:season/:contentType')
+  @ApiOperation({ summary: 'Get Content By Season and Type' }) // Swagger annotation
+  @ApiResponse({
+    status: 200,
+    description: 'Content Data',
+    type: SuccessResponse,
+  }) // Swagger annotation
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  }) // Swagger annotation
+  @ApiParam({
+    name: 'season',
+    description: 'Season',
+    enum: ['Spring', 'Summer', 'Fall', 'Winter'],
+    type: 'string',
+  }) // Swagger annotation
+  @ApiParam({
+    name: 'contentType',
+    description: 'Content Type',
+    enum: ['anime', 'manga'],
+    type: 'string',
+  }) // Swagger annotation
   @HttpCode(200)
   async getContentBySeasonsAndType(
     @Param('season') season: Season,
@@ -166,6 +297,29 @@ export class AnimeController {
 
   // Get Content By Status  And Type
   @Get('content/status/:status/:contentType')
+  @ApiOperation({ summary: 'Get Content By Status and Type' }) // Swagger annotation
+  @ApiResponse({
+    status: 200,
+    description: 'Content Data',
+    type: SuccessResponse,
+  }) // Swagger annotation
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  }) // Swagger annotation
+  @ApiParam({
+    name: 'status',
+    description: 'Status',
+    enum: ['Ongoing', 'Completed'],
+    type: 'string',
+  }) // Swagger annotation
+  @ApiParam({
+    name: 'contentType',
+    description: 'Content Type',
+    enum: ['anime', 'manga'],
+    type: 'string',
+  }) // Swagger annotation
   @HttpCode(200)
   async getContentByStatusAndType(
     @Param('status') status: Status,
@@ -191,6 +345,18 @@ export class AnimeController {
 
   // Search Anime Manga And Chharacter
   @Get()
+  @ApiOperation({ summary: 'Search Anime, Manga, and Character' }) // Swagger annotation
+  @ApiResponse({
+    status: 200,
+    description: 'Search Result',
+    type: SuccessResponse,
+  }) // Swagger annotation
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponse,
+  }) // Swagger annotation
+  @ApiQuery({ name: 'title', description: 'Search Title', type: 'string' }) // Swagger annotation
   @HttpCode(200)
   async searchContent(
     @Query('title') title: string,
