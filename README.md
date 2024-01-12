@@ -42,6 +42,7 @@ The API supports two roles:
 - **Get Favorites List Data by Anime, Manga, and Characters**
 - **Delete from Favorites List**
 - **Get Top Characters**
+- **Get And Post Reviews And Ratings
 
 ### For Admin
 
