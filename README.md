@@ -1,73 +1,88 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# MyAnimeList Clone API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+MyAnimeList Clone API is a RESTful web service that provides functionalities similar to MyAnimeList, offering information about anime, manga, and characters. Users can explore, add to favorites, and get detailed information about various anime, manga, and characters. The API is built using NestJS, JWT for authentication, MongoDB for data storage, and supports Google OAuth for user authentication.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## What is MyAnimeList?
 
-## Description
+MyAnimeList (MAL) is a platform that allows users to track and discover anime and manga. It provides information about various titles, user ratings, reviews, and recommendations, serving as a comprehensive database for anime and manga enthusiasts.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Technology Used
 
-## Installation
+- **NestJS:** A progressive Node.js framework for building efficient, scalable server-side applications.
+- **JWT (JSON Web Tokens):** A standard for securely transmitting information between parties.
+- **MongoDB:** A NoSQL database used for efficient data storage and retrieval.
+- **Google OAuth:** Used for user authentication.
+- **Cloudinary:** A cloud-based image and video management service used for handling media uploads and transformations.
 
+## Myanimelist Swagger Documentation
 ```bash
-$ npm install
+    http://localhost:4000/api
 ```
+## Roles
 
-## Running the app
+The API supports two roles:
 
-```bash
-# development
-$ npm run start
+- **Admin:** Has access to additional functionalities for adding anime, manga, and characters.
+- **Normal User:** Can access general features like getting top anime, manga, adding to favorites, and more.
 
-# watch mode
-$ npm run start:dev
+## Features
 
-# production mode
-$ npm run start:prod
+### For User
+
+- **Get Top Anime and Manga by Ratings**
+- **Get Anime, Manga by ID**
+- **Get Anime Data Only**
+- **Get Manga Data Only**
+- **Get Single Character Data**
+- **Get All Character Data of Anime or Manga**
+- **Get Anime or Manga by Genre and Type**
+- **Get Anime or Manga by Status and Type**
+- **Search Manga, Character, and Anime**
+- **Add to Favorites (Anime, Manga, Character)**
+- **Get Favorites List Data by Anime, Manga, and Characters**
+- **Delete from Favorites List**
+- **Get Top Characters**
+- **Get And Post Reviews And Ratings
+
+### For Admin
+
+- **Add Manga, Anime, and Characters**
+- **Get Manga, Anime, and Characters (similar to user features)**
+- **Get Favorite Count for Anime, Manga, and Characters**
+
+## Getting Started
+
+1. Clone the repository:
+
+    ```bash
+   git clone <repository-url> -b dev
+
+2. Navigate to the project directory:
+   ```bash
+   cd vartalaap
+   ```
+3. Install project dependencies:
+   ```
+   npm install
+   ```
+4. Create a .env file in the project root and add the following configurations:
+  ```
+   MONGODB_URI = <your_mongodb_uri>
+   SECRET_KEY = <your_secret_key>
+
+   GOOGLE_CLIENT_ID = <your_google_client_id>
+   GOOGLE_CLIENT_SECRET = <your_google_client_secret>
+   GOOGLE_CALLBACK_URL = <your_google_callback_url>
+
+   cloud_name = <your_cloud_name>
+  api_key =  <your_api_key>
+  api_secret = <your_api_secret>
+
+   URL = http://localhost:4000
 ```
+6. Run the application:
+  ```
+  npm run start:dev
+  ```
 
-## Test
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
