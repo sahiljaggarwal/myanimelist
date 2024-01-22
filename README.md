@@ -1,3 +1,4 @@
+## Dev Branch
 # MyAnimeList Clone API
 
 MyAnimeList Clone API is a RESTful web service that provides functionalities similar to MyAnimeList, offering information about anime, manga, and characters. Users can explore, add to favorites, and get detailed information about various anime, manga, and characters. The API is built using NestJS, JWT for authentication, MongoDB for data storage, and supports Google OAuth for user authentication.
